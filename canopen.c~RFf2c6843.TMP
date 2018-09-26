@@ -1,0 +1,373 @@
+/*****************************************************************************
+ * nnnnn.c
+ *****************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+ 
+ 
+ #define m 3
+#define d 4
+#define seg 7
+#define reserve 4
+#define res 8
+#define SizeClient 8
+
+
+unsigned char Buffer[SizeClient];
+unsigned char ccs,scs,x,n,e,s,c,t;
+unsigned char D[d];
+unsigned char seg_data[seg];
+unsigned char reserved[reserve];
+unsigned char reserv[res];
+unsigned char Mux[m];
+int i,taille;
+int main( int argc, char *argv[])
+{
+	printf("donner la trame a envoye ");
+	
+    //scanf("%d",&Buffer);
+	
+    printf("la trame a envoyé est %d\n", Buffer);
+
+    /***************************************************************************
+    il faut faire un test pour faire la différence entre le client et le serveur
+    ****************************************************************************/
+   
+    
+    
+    
+    /**********************************
+    le traitement fait par le serveur
+    ***********************************/
+
+	printf("le buffer est %d", *Buffer);
+    ccs= (Buffer[0]& 0xE0)>>5;
+	if(ccs==0x01){
+	
+		//décodage de la trame	
+		x=(Buffer[0]& 0x40)>>2;
+		n=(Buffer[0]&0x0c)>>2;
+		e=(Buffer[0]&0x02)>>1;
+		s=Buffer[0]&0x01;
+		Mux[0]=Buffer[1];
+		Mux[1]=Buffer[2];
+		Mux[2]=Buffer[3];
+		D[0]=Buffer[4];
+		D[1]=Buffer[5];
+		D[2]=Buffer[6];
+		D[3]=Buffer[7];
+	
+		printf("e est egal a %d et s est egal a %d",e,s);
+		//attendre le serveur pour qu'il repond par une trame
+	
+	
+	
+		if(e==0x01 && s==0x01){
+			printf("la donné du Mux est egle %d",Mux);
+			printf("la donné du n est egle %d",n);
+			printf("la donné du Data est egle %d",D);
+			
+			//fontion pour l'envoie confirm de la trame initiate sdo download
+			
+		}
+		else if(e==0x01 && s==0x00)
+		{
+	
+			printf("la donné du Mux est egle %d",Mux);
+			printf("la donné du Data est egle %d",D);
+			//fontion pour l'envoie confirm de la trame initiate sdo download
+		}
+			
+		else if (e==0x00 && s==0x01)
+		{
+			printf("la donné du Mux est egle %d",Mux);
+			printf("la donné du Data est egle %d",D);
+			//fontion pour l'envoie de la trame initiate sdo download
+			
+			//wait pour que le client m'envoie la trame
+			/*décodage for the request from client download sdo segment*/
+			ccs= (Buffer[0]& 0xe0)>>5;
+			t=(Buffer[0]&0x40)>>2;
+			n=(Buffer[0]&0x0e)>>1;
+			c=Buffer[0]&0x01;
+			seg_data[0]=Buffer[1];
+			seg_data[1]=Buffer[2];
+			seg_data[2]=Buffer[3];
+			seg_data[3]=Buffer[4];
+			seg_data[4]=Buffer[5];
+			seg_data[5]=Buffer[6];
+			seg_data[6]=Buffer[7];
+		
+			if(ccs==0x00){
+					//write frame confirm
+					//send frame of confirmation
+			
+					printf("le champ c de la trame est %d",c);
+			
+					while(c==0x00){
+						//fonction wait pour que le client m'envoie la trame
+		
+						/*décodage for the request from client download sdo segment*/
+						t=(Buffer[0]&0x40)>>2;
+						n=(Buffer[0]&0x0e)>>1;
+						c=Buffer[0]&0x01;
+						seg_data[0]=Buffer[1];
+						seg_data[1]=Buffer[2];
+						seg_data[2]=Buffer[3];
+						seg_data[3]=Buffer[4];
+						seg_data[4]=Buffer[5];
+						seg_data[5]=Buffer[6];
+						seg_data[6]=Buffer[7];
+			
+			
+			
+						//send frame of confirmation
+				}
+			}
+			else
+			
+			return 0;
+			
+		}
+			
+		else
+			
+			return 0;
+		
+	}
+
+	else if(ccs==0x02){
+		//décodage du request envoyé par le client
+		x=Buffer[0]&0x1f;
+		Mux[0]=Buffer[1];
+		Mux[1]=Buffer[2];
+		Mux[2]=Buffer[3];
+		reserved[0]=Buffer[4];
+		reserved[1]=Buffer[5];
+		reserved[2]=Buffer[6];
+		reserved[3]=Buffer[7];
+	
+		printf("la donné du Mux est egle %d",Mux);
+		//write confirmation return(e,s)
+	
+		if(e==0x01 &&( s==0x01|| s==0x00)){
+			//send confirmation upload sdo protocol
+		}
+		else if(e==0x00 && s==0x01){
+			//send confirmation
+			//wait for the client to send request
+			/*decodage du request upload SDO segment envoyé par le client*/
+				
+			ccs= (Buffer[0]& 0xe0)>>5;
+			t=(Buffer[0]&0x40)>>2;
+			n=Buffer[0]&0x0f;
+			reserv[0]=Buffer[1];
+			reserv[1]=Buffer[2];
+			reserv[2]=Buffer[3];
+			reserv[3]=Buffer[4];
+			reserv[4]=Buffer[5];
+			reserv[5]=Buffer[6];
+			reserv[6]=Buffer[7];
+			if(ccs==0x03){
+			
+				//send frame of confirmation
+			
+				printf("le champ c de la trame est %d",c);
+			
+				while(c==0x00){
+					//wait for the request client
+					//décodage de la trame	
+					ccs= (Buffer[0]& 0xe0)>>5;
+					t=(Buffer[0]&0x40)>>2;
+					n=Buffer[0]&0x0f;
+					reserv[0]=Buffer[1];
+					reserv[1]=Buffer[2];
+					reserv[2]=Buffer[3];
+					reserv[3]=Buffer[4];
+					reserv[4]=Buffer[5];
+					reserv[5]=Buffer[6];
+					reserv[6]=Buffer[7];
+					//send frame confirmation
+				}
+			
+			}
+			else{
+				return 0;
+			}
+		}
+		else{	
+			return 0;
+		}
+	}
+	else{	
+		return 0;
+	}
+	
+	/**********************************
+    le traitement fait par le client
+    ***********************************/
+	
+    
+        
+	
+		
+	//ecrire la trame à envoyé
+    printf("le buffer est %d", *Buffer);
+
+    
+    //send request Initiate SDO download
+	
+	
+	//wait for the confirm from the server
+	
+	scs= (Buffer[0]& 0xe0)>>5;	
+	
+	
+	printf("le champ scs est %d",scs);
+	if(scs ==0x03){
+		/*décodage confirm message*/
+		x=Buffer[0]&0x1F;
+		Mux[0]=Buffer[1];
+		Mux[1]=Buffer[2];
+		Mux[2]=Buffer[3];
+		reserved[0]=Buffer[4];
+		reserved[1]=Buffer[5];
+		reserved[2]=Buffer[6];
+		reserved[3]=Buffer[7];
+		printf("e est egal a %d",e);
+		if(e==0x00){		
+			//ecrire la trame a envoyé
+			//send request frame
+			//wait for confirm from server
+			scs= (Buffer[0]& 0xE0)>>5;	
+			t=(Buffer[0]&0x40)>>2;
+			x=Buffer[0]&0x0f;
+			reserv[0]=Buffer[1];
+			reserv[1]=Buffer[2];
+			reserv[2]=Buffer[3];
+			reserv[3]=Buffer[4];
+			reserv[4]=Buffer[5];
+			reserv[5]=Buffer[6];
+			reserv[6]=Buffer[7];
+			if(scs==0x01){
+				while(c==0x00){
+					//wait for confirm message from server
+					/*décodage de la trame*/
+					scs= (Buffer[0]& 0xe0)>>5;
+					t=(Buffer[0]&0x40)>>2;
+					x=Buffer[0]&0x0f;
+					reserv[0]=Buffer[1];
+					reserv[1]=Buffer[2];
+					reserv[2]=Buffer[3];
+					reserv[3]=Buffer[4];
+					reserv[4]=Buffer[5];
+					reserv[5]=Buffer[6];
+					reserv[6]=Buffer[7];
+					//send frame confirmation
+				}
+			}
+			else{
+			//fonction d'erreur
+			return 0;
+			}
+			
+		}
+		else{
+			return 0;
+		}
+	}
+	
+	else if(scs ==0x02){
+		
+		//décodage de la trame confirm envoyé par serveur
+		x=(Buffer[0]&0x40)>>2;
+		n=(Buffer[0]&0x0c)>>2;
+		e=(Buffer[0]&0x02)>>1;
+		s=Buffer[0]&0x01;
+		Mux[0]=Buffer[1];
+		Mux[1]=Buffer[2];
+		Mux[2]=Buffer[3];
+		D[0]=Buffer[4];
+		D[1]=Buffer[5];
+		D[2]=Buffer[6];
+		D[3]=Buffer[7];
+		printf("e est egal a %d",e);
+		printf("s est egal a %d",s);
+		if(e==0x01 && s==0x01){
+			printf("la donné du Mux est egle %d",Mux);
+			printf("la donné du n est egle %d",n);
+			printf("la donné du Data est egle %d",D);
+					
+		}
+		else if(e==0x01 && s==0x00)
+		{
+	
+			printf("la donné du Mux est egle %d",Mux);
+			printf("la donné du Data est egle %d",D);
+			
+		}
+			
+		else if (e==0x00 && s==0x01)
+		{
+			printf("la donné du Mux est egle %d",Mux);
+			printf("la donné du Data est egle %d",D);
+			//write request upload SDO segment
+			//send request upload SDO segment
+			
+			//wait pour que le serveur m'envoie la confirmation
+			/*décodage for confirm segment*/
+			scs= (Buffer[0]& 0xe0)>>5;	
+			t=(Buffer[0]&0x40)>>2;
+			n=(Buffer[0]&0x0e)>>1;
+			c=Buffer[0]&0x01;
+			seg_data[0]=Buffer[1];
+			seg_data[1]=Buffer[2];
+			seg_data[2]=Buffer[3];
+			seg_data[3]=Buffer[4];
+			seg_data[4]=Buffer[5];
+			seg_data[5]=Buffer[6];
+			seg_data[6]=Buffer[7];
+		
+			printf("le champ scs de la trame est %d",scs);
+			if(scs==0x00){
+				
+				printf("le champ c de la trame est %d",c);
+				
+				while(c==0x00){
+					//fonction wait pour que le serveur m'envoie la confirmation
+					/*décodage for confirm from server download sdo segment*/
+					t=(Buffer[0]&0x40)>>2;
+					n=(Buffer[0]&0x0e)>>1;
+					c=Buffer[0]&0x01;
+					seg_data[0]=Buffer[1];
+					seg_data[1]=Buffer[2];
+					seg_data[2]=Buffer[3];
+					seg_data[3]=Buffer[4];
+					seg_data[4]=Buffer[5];
+					seg_data[5]=Buffer[6];
+					seg_data[6]=Buffer[7];
+						
+			
+					//send frame request
+				}
+			}
+			else
+			
+			return 0;
+			
+		}
+			
+		else{
+			
+			return 0;
+		}
+		
+	}
+	else{		
+		return 0;
+	}
+
+return 0;	
+}
+	
+

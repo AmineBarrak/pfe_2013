@@ -1,0 +1,983 @@
+/*****************************************************************************
+ * nnnnn.c
+ *****************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "driver.h"
+
+ 
+#define SizeClient 8
+
+
+
+/***déclaration dictionnaire object***/ 
+
+//les buffer pour lecture "upload" sdo
+const UNSIGNED8 Buffer0[SizeClient]={0x99,0x66,0x77,0x09,0x86,0x77,0x39,0x88};
+const UNSIGNED8 Buffer1[SizeClient]={0x44,0x66,0x53,0x6E,0x0C,0x77,0x3B,0x88};
+const UNSIGNED8 Buffer2[SizeClient]={0xFF,0x66,0x51,0x62,0x01,0x77,0x33,0x88};
+const UNSIGNED8 Buffer3[SizeClient]={0xEE,0x66,0x53,0x65,0x06,0x77,0x37,0x88};
+const UNSIGNED8 Buffer4[SizeClient]={0xCC,0x66,0x52,0x6E,0x0C,0x77,0x3B,0x88};
+const UNSIGNED8 Buffer5[SizeClient]={0x9B,0x66,0x5F,0x6E,0x0F,0x77,0x3F,0x88};
+
+
+//les buffer pour ecriture "download" sdo
+
+UNSIGNED8 S_Buffer0[SizeClient]={0x99,0x66,0x77};
+UNSIGNED8 S_Buffer1[SizeClient]={0xFF,0xE6,0x7B};
+UNSIGNED8 S_Buffer2[SizeClient]={0x9B,0x72,0xA7};
+UNSIGNED8 S_Buffer3[SizeClient]={0x27,0x64,0xCD};
+UNSIGNED8 S_Buffer4[SizeClient]={0x93,0x86,0xBA};
+UNSIGNED8 S_Buffer5[SizeClient]={0x90,0x46,0xDB};
+
+
+//les buffer pour le mapping pdo
+UNSIGNED8 P_Buffer0[SizeClient];
+UNSIGNED8 P_Buffer1[SizeClient];
+UNSIGNED8 P_Buffer2[SizeClient];
+UNSIGNED8 P_Buffer3[SizeClient];
+UNSIGNED8 P_Buffer4[SizeClient];
+UNSIGNED8 P_Buffer5[SizeClient];
+
+/**************************************/
+
+
+
+
+
+
+UNSIGNED8 COB_ID;
+UNSIGNED8 Buffer[SizeClient];
+UNSIGNED8 BufferSend[SizeClient];
+const UNSIGNED8 reserved =0x00;
+UNSIGNED8 length =0x80;
+UNSIGNED32 buf;
+INSIGNED64 mapping;
+
+
+
+
+	
+
+    //déclaration des structures
+    init_down_SDO_client CID_SDO_STR;
+	init_down_SDO_server SID_SDO_STR;
+    down_SDO_seg_client CSD_SDO_STR;
+    down_SDO_seg_server SSD_SDO_STR;
+    init_up_SDO_client CIU_SDO_STR;
+    init_up_SDO_server SIU_SDO_STR;
+    up_SDO_seg_client CSU_SDO_STR;
+    up_SDO_seg_server SSU_SDO_STR;
+    
+    
+    init_down_SDO_client *CID_SDO = &CID_SDO_STR;
+    init_down_SDO_server *SID_SDO = &SID_SDO_STR;
+    down_SDO_seg_client *CSD_SDO = &CSD_SDO_STR;
+    down_SDO_seg_server *SSD_SDO = &SSD_SDO_STR;
+    init_up_SDO_client *CIU_SDO = &CIU_SDO_STR;
+    init_up_SDO_server *SIU_SDO = &SIU_SDO_STR;
+    up_SDO_seg_client *CSU_SDO = &CSU_SDO_STR;
+    up_SDO_seg_server *SSU_SDO = &SSU_SDO_STR;
+    
+    
+int main( int argc, char *argv[])
+{
+	printf("donner la trame a envoye ");
+	
+    //scanf("%d",&Buffer);
+	
+    printf("la trame a envoyé est %d\n", Buffer);
+
+if (COB_ID == CAN_ID_NMT_SERVICE) {}
+
+else if (COB_ID == CAN_ID_SYNC ) {}
+
+else if ((COB_ID >= CAN_ID_EMERGENCY) && (COB_ID <= CAN_ID_EMERGENCY+CANOPEN_MAX_ID)){   
+} 
+
+else if (COB_ID == CAN_ID_TIME_STAMP ) {}
+/***************************/
+//traitement PDO
+/***************************/
+
+else if ((COB_ID >= CAN_ID_TPDO1) && (COB_ID <= CAN_ID_TPDO1+CANOPEN_MAX_ID)){   
+}
+
+else if ((COB_ID >= CAN_ID_RPDO1) && (COB_ID <= CAN_ID_RPDO1+CANOPEN_MAX_ID)){   
+}
+//ce traitement va etre réaliser apres avoir tester le PDO et le regler avec une fonction de priorité
+
+/*
+else if ((COB_ID >= CAN_ID_TPDO2) && (COB_ID <= CAN_ID_TPDO2+CANOPEN_MAX_ID)){   
+}
+
+else if ((COB_ID >= CAN_ID_RPDO2) && (COB_ID <= CAN_ID_RPDO2+CANOPEN_MAX_ID)){   
+}
+
+else if ((COB_ID >= CAN_ID_TPDO3) && (COB_ID <= CAN_ID_TPDO3+CANOPEN_MAX_ID)){   
+}
+
+else if ((COB_ID >= CAN_ID_RPDO3) && (COB_ID <= CAN_ID_RPDO3+CANOPEN_MAX_ID)){   
+}
+
+else if ((COB_ID >= CAN_ID_TPDO4) && (COB_ID <= CAN_ID_TPDO4+CANOPEN_MAX_ID)){   
+}
+
+else if ((COB_ID >= CAN_ID_RPDO4) && (COB_ID <= CAN_ID_RPDO4+CANOPEN_MAX_ID)){   
+}*/ 
+else if ((COB_ID >= CAN_ID_RSDO) && (COB_ID <= CAN_ID_RSDO+CANOPEN_MAX_ID)){
+    /**************
+    traitement SDO
+    **************/
+
+    /**********************************
+    le traitement fait par le serveur
+    ***********************************/
+
+	printf("le buffer est %d", *Buffer);
+
+	//test sur la longueur de la trame
+    if(length != 0x80) return CO_ERROR_RX_MSG_LENGTH;
+    
+    /************************************************/
+    
+    //initialisation des structures
+    
+    
+    /************************************************/
+    
+    CID_SDO->ccs= (Buffer[0]& 0xE0)>>5;
+    
+    
+    
+	if(CID_SDO->ccs==0x01){
+		//recevoir message from client
+		//décodage de la trame	
+		CID_SDO->x=(Buffer[0]& 0x40)>>2;
+		CID_SDO->n=(Buffer[0]&0x0C)>>2;
+		CID_SDO->e=(Buffer[0]&0x02)>>1;
+		CID_SDO->s=Buffer[0]&0x01;
+		CID_SDO->Mux[0]=Buffer[1];
+		CID_SDO->Mux[1]=Buffer[2];
+		CID_SDO->Mux[2]=Buffer[3];
+		CID_SDO->Data[0]=Buffer[4];
+		CID_SDO->Data[1]=Buffer[5];
+		CID_SDO->Data[2]=Buffer[6];
+		CID_SDO->Data[3]=Buffer[7];
+	
+		
+		//stockage du donné dans le dictionnaire objet
+		DO_stockage(CID_SDO->Mux,CID_SDO->Data);
+		
+		printf("e est egal a %d et s est egal a %d",CID_SDO->e,CID_SDO->s);
+		
+	
+	
+	
+		if(CID_SDO->e==0x01 && CID_SDO->s==0x01){
+			printf("la donné du Mux est egle %d",CID_SDO->Mux);
+			printf("la donné du n est egle %d",CID_SDO->n);
+			printf("la donné du Data est egle %d",CID_SDO->Data);
+			
+			//ecrire la trame a envoyé
+			/*codage de la trame pour envoyer*/
+			BufferSend[0]= 0x60;
+			BufferSend[1]= CID_SDO->Mux[0];
+			BufferSend[2]= CID_SDO->Mux[1];
+			BufferSend[3]= CID_SDO->Mux[2];
+			BufferSend[4]= reserved;
+			BufferSend[5]= reserved;
+			BufferSend[6]= reserved;
+			BufferSend[7]= reserved;
+			
+			//send(*BufferSend);
+			//Send confirm de la trame initiate sdo download
+			
+		}
+		else if(CID_SDO->e==0x01 && CID_SDO->s==0x00)
+		{
+			if(CID_SDO->n==0x00){
+				printf("la donné du Mux est egle %d",CID_SDO->Mux);
+				printf("la donné du Data est egle %d",CID_SDO->Data);
+				/*codage de la trame pour envoyer*/
+				BufferSend[0]= 0x60;
+				BufferSend[1]= CID_SDO->Mux[0];
+				BufferSend[2]= CID_SDO->Mux[1];
+				BufferSend[3]= CID_SDO->Mux[2];
+				BufferSend[4]= reserved;
+				BufferSend[5]= reserved;
+				BufferSend[6]= reserved;
+				BufferSend[7]= reserved;
+				//send(*BufferSend);
+				//Send confirm de la trame initiate sdo download
+				
+			}
+		}
+			
+		/* else if (CID_SDO->e==0x00 && CID_SDO->s==0x01)
+		{
+			if(CID_SDO->n==0x00){
+				printf("la donné du Mux est egle %d",CID_SDO->Mux);
+				printf("la donné du Data est egle %d",CID_SDO->Data);
+				//codage de la trame pour envoyer
+				BufferSend[0]= 0x60;
+				BufferSend[1]= CID_SDO->Mux[0];
+				BufferSend[2]= CID_SDO->Mux[1];
+				BufferSend[3]= CID_SDO->Mux[2];
+				BufferSend[4]= reserved;
+				BufferSend[5]= reserved;
+				BufferSend[6]= reserved;
+				BufferSend[7]= reserved;
+				//send(*BufferSend);
+				//Send trame initiate sdo download
+			
+				//wait pour que le client m'envoie la trame
+				//décodage for the request from client download sdo segment
+				CSD_SDO->ccs= (Buffer[0]& 0xE0)>>5;
+				CSD_SDO->t=(Buffer[0]&0x40)>>2;
+				CSD_SDO->n=(Buffer[0]&0x0E)>>1;
+				CSD_SDO->c=Buffer[0]&0x01;
+				CSD_SDO->seg_data[0]=Buffer[1];
+				CSD_SDO->seg_data[1]=Buffer[2];
+				CSD_SDO->seg_data[2]=Buffer[3];
+				CSD_SDO->seg_data[3]=Buffer[4];
+				CSD_SDO->seg_data[4]=Buffer[5];
+				CSD_SDO->seg_data[5]=Buffer[6];
+				CSD_SDO->seg_data[6]=Buffer[7];
+		
+				if(CSD_SDO->ccs==0x00){
+					
+						
+					//ecrire la trame pour envoyer
+					//codage de la trame pour envoyer
+					BufferSend[0]=0x20;
+					//on a mis le toggle bit a zero
+					BufferSend[1]=reserved;
+					BufferSend[2]=reserved;
+					BufferSend[3]=reserved;
+					BufferSend[4]=reserved;
+					BufferSend[5]=reserved;
+					BufferSend[6]=reserved;
+					BufferSend[7]=reserved;
+					//send(*BufferSend);
+					//send frame of confirmation
+					printf("le champ c de la trame est %d",CSD_SDO->c);
+					while(CSD_SDO->c==0x00){
+						//wait pour que le client m'envoie la trame
+		
+						//décodage for the request from client download sdo segment
+						CSD_SDO->ccs= (Buffer[0]& 0xE0)>>5;
+						CSD_SDO->t=(Buffer[0]&0x40)>>2;
+						CSD_SDO->n=(Buffer[0]&0x0E)>>1;
+						CSD_SDO->c=Buffer[0]&0x01;
+						CSD_SDO->seg_data[0]=Buffer[1];
+						CSD_SDO->seg_data[1]=Buffer[2];
+						CSD_SDO->seg_data[2]=Buffer[3];
+						CSD_SDO->seg_data[3]=Buffer[4];
+						CSD_SDO->seg_data[4]=Buffer[5];
+						CSD_SDO->seg_data[5]=Buffer[6];
+						CSD_SDO->seg_data[6]=Buffer[7];
+					
+						
+						//ecrire la trame pour envoyer
+						//codage de la trame pour envoyer
+						if(SSD_SDO->t==0x01){
+							BufferSend[0]=0x20;
+						}
+						else
+						{
+							BufferSend[0]=0x30;
+						}
+						//on a mis le toggle bit a zero
+						BufferSend[1]=reserved;
+						BufferSend[2]=reserved;
+						BufferSend[3]=reserved;
+						BufferSend[4]=reserved;
+						BufferSend[5]=reserved;
+						BufferSend[6]=reserved;
+						BufferSend[7]=reserved;
+						//send(*BufferSend);
+						//send frame of confirmation
+					
+					
+						
+						//test toggle bit
+						if(SSD_SDO->t!=CSD_SDO->t){
+							Abort_SDO_transfert(SID_SDO->Mux,0x05030000);
+							return CO_ERROR_ILLEGAL_ARGUMENT;
+						}
+						else
+							return CO_ERROR_NO ;
+					
+						}
+				}
+				else
+			
+					return CO_ERROR_ILLEGAL_ARGUMENT;
+			
+			return CO_ERROR_ILLEGAL_ARGUMENT;
+			}	
+		}
+			
+		else
+			
+			return CO_ERROR_ILLEGAL_ARGUMENT;
+		
+		} */
+	}
+	CIU_SDO->ccs= (Buffer[0]& 0xE0)>>5;
+	if(CIU_SDO->ccs==0x02){
+		//décodage du request envoyé par le client
+		CIU_SDO->x=Buffer[0]&0x1F;
+		CIU_SDO->Mux[0]=Buffer[1];
+		CIU_SDO->Mux[1]=Buffer[2];
+		CIU_SDO->Mux[2]=Buffer[3];
+		CIU_SDO->reserv[0]=reserved;
+		CIU_SDO->reserv[1]=reserved;
+		CIU_SDO->reserv[2]=reserved;
+		CIU_SDO->reserv[3]=reserved;
+		
+	
+		printf("la donné du Mux est egle %d",CIU_SDO->Mux);
+		//write confirmation return(e,s)
+		
+	
+		
+		if((SIU_SDO->e==0x01) && (SIU_SDO->s==0x01)){
+			
+			buf=DO_read( CIU_SDO->Mux);
+			//le champ n est valide
+			/*codage de la trame pour envoyer*/
+			//affectation de la data
+			SIU_SDO->Data[3]=((buf&0xFF000000)>>24);
+			SIU_SDO->Data[2]=((buf&0x00FF0000)>>16);
+			SIU_SDO->Data[1]=((buf&0x0000FF00)>>8);
+			SIU_SDO->Data[0]= (buf&0x000000FF);
+			
+			
+			BufferSend[0]=(SIU_SDO->s)>>7|(SIU_SDO->e)>>6|(SIU_SDO->n)>>4|0x40;
+			//on a mis le toggle bit a zero
+			BufferSend[1]=CIU_SDO->Mux[0];
+			BufferSend[2]=CIU_SDO->Mux[1];
+			BufferSend[3]=CIU_SDO->Mux[2];
+			BufferSend[4]=SIU_SDO->Data[0];
+			BufferSend[5]=SIU_SDO->Data[1];
+			BufferSend[6]=SIU_SDO->Data[2];
+			BufferSend[7]=SIU_SDO->Data[3];
+			
+			
+			//send(*BufferSend);
+			//send confirmation upload sdo protocol
+			
+			return CO_ERROR_NO ;
+			
+		}
+		
+		
+		else if ((SIU_SDO->e==0x01) && (SIU_SDO->s==0x00)){
+			//le champ n est a 0
+			/*codage de la trame pour envoyer*/
+			buf=DO_read( CIU_SDO->Mux);
+			//le champ n est valide
+			/*codage de la trame pour envoyer*/
+			//affectation de la data
+			SIU_SDO->Data[0]=(buf&0xFF000000);
+			SIU_SDO->Data[1]=(buf&0x00FF0000);
+			SIU_SDO->Data[2]=(buf&0x0000FF00);
+			SIU_SDO->Data[3]=(buf&0x000000FF);
+			
+			
+			BufferSend[0]=(SIU_SDO->s)>>7|(SIU_SDO->e)>>6|0x40;
+			//on a mis le toggle bit a zero
+			BufferSend[1]=SIU_SDO->Mux[0];
+			BufferSend[2]=SIU_SDO->Mux[1];
+			BufferSend[3]=SIU_SDO->Mux[2];
+			BufferSend[4]=SIU_SDO->Data[0];
+			BufferSend[5]=SIU_SDO->Data[1];
+			BufferSend[6]=SIU_SDO->Data[2];
+			BufferSend[7]=SIU_SDO->Data[3];
+			
+			
+			//send(*BufferSend);
+			//send confirmation upload sdo protocol
+			
+			return CO_ERROR_NO ;
+		
+		}
+		/* else if((SIU_SDO->e==0x00) && (SIU_SDO->s==0x01)){
+			codage de la trame pour envoyer
+			// n est mise a 0 car n'est pas valide
+			
+			BufferSend[0]=(SIU_SDO->s)>>7|(SIU_SDO->e)>>6|0x40;
+			// on a mis le toggle bit a zero
+			BufferSend[1]=SIU_SDO->Mux[0];
+			BufferSend[2]=SIU_SDO->Mux[1];
+			BufferSend[3]=SIU_SDO->Mux[2];
+			BufferSend[4]=SIU_SDO->Data[0];
+			BufferSend[5]=SIU_SDO->Data[1];
+			BufferSend[6]=SIU_SDO->Data[2];
+			BufferSend[7]=SIU_SDO->Data[3];
+			
+			// send(*BufferSend);
+			// send confirmation
+			// wait for the client to send request
+			decodage du request upload SDO segment envoyé par le client
+				
+			CSU_SDO->ccs= (Buffer[0]& 0xE0)>>5;
+			CSU_SDO->t=(Buffer[0]&0x40)>>2;
+			CSU_SDO->x=Buffer[0]&0x0F;
+	
+			if(CSU_SDO->ccs==0x03){
+				// ecrire la trame pour envoyer
+				codage de la trame pour envoyer
+				
+				BufferSend[0]=(SSU_SDO->c)>>7|(SSU_SDO->n)>>4|0x00;//car scs=0 et t=0 juste au début
+				
+				BufferSend[1]=SSU_SDO->seg_data[0];
+				BufferSend[2]=SSU_SDO->seg_data[1];
+				BufferSend[3]=SSU_SDO->seg_data[2];
+				BufferSend[4]=SSU_SDO->seg_data[3];
+				BufferSend[5]=SSU_SDO->seg_data[4];
+				BufferSend[6]=SSU_SDO->seg_data[5];
+				BufferSend[7]=SSU_SDO->seg_data[6];
+			
+				// send(*BufferSend);
+				// send frame of confirmation
+			
+				printf("le champ c de la trame est %d",SSU_SDO->c);
+			
+				while(SSU_SDO->c==0x00){
+					// wait for the request client
+					// décodage de la trame	
+					CSU_SDO->ccs= (Buffer[0]& 0xE0)>>5;
+					CSU_SDO->t=(Buffer[0]&0x40)>>2;
+					CSU_SDO->x=Buffer[0]&0x0F;
+				
+					
+					// ecrire la trame pour envoyer
+					codage de la trame pour envoyer
+					if(CSU_SDO->t==0x00){
+						BufferSend[0]=(SSU_SDO->c)>>7|(SSU_SDO->n)>>4|0x10;
+					}
+					else{
+						BufferSend[0]=(SSU_SDO->c)>>7|(SSU_SDO->n)>>4|0x00;
+					}
+							// on a mis le toggle bit a zero
+									
+					BufferSend[1]=SSU_SDO->seg_data[0];
+					BufferSend[2]=SSU_SDO->seg_data[1];
+					BufferSend[3]=SSU_SDO->seg_data[2];
+					BufferSend[4]=SSU_SDO->seg_data[3];
+					BufferSend[5]=SSU_SDO->seg_data[4];
+					BufferSend[6]=SSU_SDO->seg_data[5];
+					BufferSend[7]=SSU_SDO->seg_data[6];
+					// send(*BufferSend);
+					// send frame confirmation
+					
+					
+					// test toggle bit
+					if(SSU_SDO->t!=CSU_SDO->t){
+						Abort_SDO_transfert(CIU_SDO->Mux,0x05030000);
+						return CO_ERROR_ILLEGAL_ARGUMENT;
+					}
+					else
+						return CO_ERROR_NO ;				
+				}			
+			}
+			else{
+				return CO_ERROR_ILLEGAL_ARGUMENT;
+			}
+		}
+		else{	
+			return CO_ERROR_ILLEGAL_ARGUMENT;
+		} */
+	}
+	
+	/**********************************
+    le traitement fait par le client
+    ***********************************/
+}	
+ 
+else if ((COB_ID >= CAN_ID_TSDO) && (COB_ID <= CAN_ID_TSDO+CANOPEN_MAX_ID))
+	{
+	
+	if(length != 8) return CO_ERROR_RX_MSG_LENGTH;       
+
+		
+    
+    /************************************************/
+    
+    //initialisation des structures
+    
+    
+    /************************************************/
+    
+    
+	//ecrire la trame à envoyé
+    printf("le buffer est %d", *Buffer);
+
+    /*codage de la trame pour envoyer*/
+    BufferSend[0]= (CID_SDO->s)>>7|(CID_SDO->e)>>6|(CID_SDO->n)>>4|0x40;
+	BufferSend[1]= CID_SDO->Mux[0];
+	BufferSend[2]= CID_SDO->Mux[1];
+	BufferSend[3]= CID_SDO->Mux[2];
+	BufferSend[4]= CID_SDO->Data[0];
+	BufferSend[5]= CID_SDO->Data[1];
+	BufferSend[6]= CID_SDO->Data[2];
+	BufferSend[7]= CID_SDO->Data[3];
+    
+    
+    //send(*BufferSend);
+    //send request Initiate SDO download
+	
+	
+	//wait for the confirm from the server
+	
+	SID_SDO->scs= (Buffer[0]& 0xE0)>>5;	
+	
+	
+	printf("le champ scs est %d",SID_SDO->scs);
+	if(SID_SDO->scs ==0x03){
+		/*décodage confirm message*/
+		SID_SDO->x=Buffer[0]&0x1F;
+		SID_SDO->Mux[0]=Buffer[1];
+		SID_SDO->Mux[1]=Buffer[2];
+		SID_SDO->Mux[2]=Buffer[3];
+		SID_SDO->reserv[0]=reserved;
+		SID_SDO->reserv[1]=reserved;
+		SID_SDO->reserv[2]=reserved;
+		SID_SDO->reserv[3]=reserved;
+		
+		
+		printf("e est egal a %d",CID_SDO->e);
+		/* if(CID_SDO->e==0x00){		
+			// ecrire la trame a envoyé
+			//codage de la trame pour envoyer
+			BufferSend[0]= (CSD_SDO->c)>>5|(CSD_SDO->n)>>4|0x00;
+			BufferSend[1]= CSD_SDO->seg_data[0];
+			BufferSend[2]= CSD_SDO->seg_data[1];
+			BufferSend[3]= CSD_SDO->seg_data[2];
+			BufferSend[4]= CSD_SDO->seg_data[3];
+			BufferSend[5]= CSD_SDO->seg_data[4];
+			BufferSend[6]= CSD_SDO->seg_data[5];
+			BufferSend[7]= CSD_SDO->seg_data[6];
+			// send(*BufferSend);
+			
+			// wait for confirm from server
+		
+			//décodage de la trame
+			SSD_SDO->scs= (Buffer[0]& 0xE0)>>5;	
+			SSD_SDO->t=(Buffer[0]&0x40)>>2;
+			SSD_SDO->x=Buffer[0]&0x0F;
+		
+				while(CSD_SDO->c==0x00){
+					// wait for confirm message from server
+					//décodage de la trame
+					SSD_SDO->scs= (Buffer[0]& 0xE0)>>5;	
+					SSD_SDO->t=(Buffer[0]&0x40)>>2;
+					SSD_SDO->x=Buffer[0]&0x0F;
+				
+					// ecrire la trame a envoyer
+					//codage de la trame pour envoyer
+					if(CSD_SDO->t==0x01){
+						BufferSend[0]=(CSD_SDO->c)>>7|(CSD_SDO->n)>>4|0x00;
+					}
+					else
+					{
+						BufferSend[0]=(CSD_SDO->c)>>7|(CSD_SDO->n)>>4|0x10;
+					}
+					// on a mis le toggle bit a zero
+					BufferSend[1]=CSD_SDO->seg_data[0];
+					BufferSend[2]=CSD_SDO->seg_data[1];
+					BufferSend[3]=CSD_SDO->seg_data[2];
+					BufferSend[4]=CSD_SDO->seg_data[3];
+					BufferSend[5]=CSD_SDO->seg_data[4];
+					BufferSend[6]=CSD_SDO->seg_data[5];
+					BufferSend[7]=CSD_SDO->seg_data[6];
+					// send(*BufferSend);
+					// send frame confirmation
+					
+					
+					// test toggle bit
+					if(CSD_SDO->t!=SSD_SDO->t){
+						Abort_SDO_transfert(SID_SDO->Mux,0x05030000);
+						return CO_ERROR_ILLEGAL_ARGUMENT;
+					}
+					else
+						return CO_ERROR_NO ;
+					
+				}
+			}
+			else{
+				return CO_ERROR_ILLEGAL_ARGUMENT;
+			}
+			
+		}
+		else{
+			return CO_ERROR_ILLEGAL_ARGUMENT;
+		} */ 
+	}
+	//ecrire la trame à envoyé
+    printf("le buffer est %d", *Buffer);
+
+    /*codage de la trame pour envoyer*/
+    BufferSend[0]= 0x40;
+	BufferSend[1]= CIU_SDO->Mux[0];
+	BufferSend[2]= CIU_SDO->Mux[1];
+	BufferSend[3]= CIU_SDO->Mux[2];
+	BufferSend[4]= reserved;
+	BufferSend[5]= reserved;
+	BufferSend[6]= reserved;
+	BufferSend[7]= reserved;
+    
+    
+    //send(*BufferSend);
+    //send request Initiate SDO download
+	
+	
+	//wait for the confirm from the server
+	
+	SIU_SDO->scs= (Buffer[0]& 0xE0)>>5;	
+	
+	
+	printf("le champ scs est %d",SIU_SDO->scs);
+	if(SIU_SDO->scs ==0x02){
+		
+		//décodage de la trame confirm envoyé par serveur
+		SIU_SDO->x=(Buffer[0]&0x40)>>2;
+		SIU_SDO->n=(Buffer[0]&0x0C)>>2;
+		SIU_SDO->e=(Buffer[0]&0x02)>>1;
+		SIU_SDO->s=Buffer[0]&0x01;
+		SIU_SDO->Mux[0]=Buffer[1];
+		SIU_SDO->Mux[1]=Buffer[2];
+		SIU_SDO->Mux[2]=Buffer[3];
+		SIU_SDO->Data[0]=Buffer[4];
+		SIU_SDO->Data[1]=Buffer[5];
+		SIU_SDO->Data[2]=Buffer[6];
+		SIU_SDO->Data[3]=Buffer[7];
+		
+		printf("e est egal a %d",SIU_SDO->e);
+		printf("s est egal a %d",SIU_SDO->s);
+		
+		
+		if(SIU_SDO->e==0x01 && SIU_SDO->s==0x01){
+			//n est valide
+			printf("la donné du Mux est egle %d",SIU_SDO->Mux);
+			printf("la donné du n est egle %d",SIU_SDO->n);
+			printf("la donné du Data est egle %d",SIU_SDO->Data);
+			return CO_ERROR_NO;
+		}
+		else if(SIU_SDO->e==0x01 && SIU_SDO->s==0x00)
+		{
+			if(SIU_SDO->n==0x00){
+			printf("la donné du Mux est egle %d",SIU_SDO->Mux);
+			printf("la donné du Data est egle %d",SIU_SDO->Data);
+			return CO_ERROR_NO;
+			}
+			else return CO_ERROR_NO;
+		}
+			
+/* 		else if (SIU_SDO->e==0x00 && SIU_SDO->s==0x01)
+		{
+			if(SIU_SDO->n==0x00){
+				printf("la donné du Mux est egle %d",SIU_SDO->Mux);
+				printf("la donné du Data est egle %d",SIU_SDO->Data);
+				//write request upload SDO segment
+				codage de la trame pour envoyer
+				BufferSend[0]=0x60;
+				//on a mis le toggle bit a zero
+				BufferSend[1]=reserved;
+				BufferSend[2]=reserved;
+				BufferSend[3]=reserved;
+				BufferSend[4]=reserved;
+				BufferSend[5]=reserved;
+				BufferSend[6]=reserved;
+				BufferSend[7]=reserved;
+			
+				//send(*BufferSend);
+				//send request upload SDO segment
+			
+				//wait pour que le serveur m'envoie la confirmation
+				décodage for confirm segment
+				SSU_SDO->scs= (Buffer[0]& 0xE0)>>5;	
+				SSU_SDO->t=(Buffer[0]&0x40)>>2;
+				SSU_SDO->n=(Buffer[0]&0x0E)>>1;
+				SSU_SDO->c=Buffer[0]&0x01;
+				SSU_SDO->seg_data[0]=Buffer[1];
+				SSU_SDO->seg_data[1]=Buffer[2];
+				SSU_SDO->seg_data[2]=Buffer[3];
+				SSU_SDO->seg_data[3]=Buffer[4];
+				SSU_SDO->seg_data[4]=Buffer[5];
+				SSU_SDO->seg_data[5]=Buffer[6];
+				SSU_SDO->seg_data[6]=Buffer[7];
+		
+				printf("le champ scs de la trame est %d",SSU_SDO->scs);
+				if(SSU_SDO->scs==0x00){
+				
+					printf("le champ c de la trame est %d",SSU_SDO->c);
+				
+					while(SSU_SDO->c==0x00){
+						//ecrire la trame a envoyer
+						codage de la trame pour envoyer
+						if(CSU_SDO->t==0x01){
+							BufferSend[0]=0x70;
+						}
+						else
+						{
+							BufferSend[0]=0x60;
+						}
+						//on a mis le toggle bit a zero
+						BufferSend[1]=reserved;
+						BufferSend[2]=reserved;
+						BufferSend[3]=reserved;
+						BufferSend[4]=reserved;
+						BufferSend[5]=reserved;
+						BufferSend[6]=reserved;
+						BufferSend[7]=reserved;
+						//send(*BufferSend);
+						//send frame request
+					
+						//wait pour que le serveur m'envoie la confirmation
+						//décodage for confirm from server download sdo segment						SSU_SDO->t=(Buffer[0]&0x40)>>2;
+						SSU_SDO->n=(Buffer[0]&0x0E)>>1;
+						SSU_SDO->c=Buffer[0]&0x01;
+						SSU_SDO->seg_data[0]=Buffer[1];
+						SSU_SDO->seg_data[1]=Buffer[2];
+						SSU_SDO->seg_data[2]=Buffer[3];
+						SSU_SDO->seg_data[3]=Buffer[4];
+						SSU_SDO->seg_data[4]=Buffer[5];
+						SSU_SDO->seg_data[5]=Buffer[6];
+						SSU_SDO->seg_data[6]=Buffer[7];
+					
+					
+						//test toggle bit
+						if(CSU_SDO->t!=SSU_SDO->t){
+							Abort_SDO_transfert(SIU_SDO->Mux,0x05030000);
+							return CO_ERROR_ILLEGAL_ARGUMENT;
+						}
+						else
+							return CO_ERROR_NO ;
+						
+					
+					}
+				}
+				else
+			
+					return CO_ERROR_ILLEGAL_ARGUMENT;
+			
+			}
+			else return CO_ERROR_NO ;
+			
+		}
+			
+		else{
+			
+			return CO_ERROR_ILLEGAL_ARGUMENT;
+		} */
+		
+	}
+	else{		
+		return CO_ERROR_ILLEGAL_ARGUMENT;
+	}
+
+	
+}		
+
+else if ((COB_ID >= CAN_ID_HEARTBEAT) && (COB_ID <= CAN_ID_HEARTBEAT+CANOPEN_MAX_ID)){
+}
+	
+return 0;	
+}
+
+//la fonction abort qui fait appel a l'erreur survenue
+void Abort_SDO_transfert(UNSIGNED8 Mux[3],UNSIGNED32 abort_code){
+
+		BufferSend[0]=0x80;
+		BufferSend[1]=Mux[0];
+		BufferSend[2]=Mux[1];
+		BufferSend[3]=Mux[2];
+		BufferSend[4]=abort_code & 0x000000FF;
+		BufferSend[5]=(abort_code & 0x0000FF00)>>8;
+		BufferSend[6]=(abort_code & 0x00FF0000)>>16;
+		BufferSend[7]=(abort_code & 0xFF000000)>>24;
+		//send(*BufferSend);
+		//send frame request
+	
+}
+
+
+//ecriture Dictionnaire Object "download"
+void DO_stockage(UNSIGNED8 Mux[3],UNSIGNED8 data[4] ){
+	
+	if(Mux[0]==S_Buffer0[0]){
+		if((Mux[1]==S_Buffer0[1])&&(Mux[2]==S_Buffer0[2])){
+			S_Buffer0[3]=data[0];
+			S_Buffer0[4]=data[1];
+			S_Buffer0[5]=data[2];
+			S_Buffer0[6]=data[3];
+		}
+	}
+	else if(Mux[0]==S_Buffer1[0]){
+		if((Mux[1]==S_Buffer1[1])&&(Mux[2]==S_Buffer1[2])){
+			S_Buffer1[3]=data[0];
+			S_Buffer1[4]=data[1];
+			S_Buffer1[5]=data[2];
+			S_Buffer1[6]=data[3];
+		}
+	}
+	else if(Mux[0]==S_Buffer2[0]){
+		if((Mux[1]==S_Buffer2[1])&&(Mux[2]==S_Buffer2[2])){
+			S_Buffer2[3]=data[0];
+			S_Buffer2[4]=data[1];
+			S_Buffer2[5]=data[2];
+			S_Buffer2[6]=data[3];
+		}
+	}
+	else if(Mux[0]==S_Buffer3[0]){
+		if((Mux[1]==S_Buffer3[1])&&(Mux[2]==S_Buffer3[2])){
+			S_Buffer3[3]=data[0];
+			S_Buffer3[4]=data[1];
+			S_Buffer3[5]=data[2];
+			S_Buffer3[6]=data[3];
+		}
+	}
+	else if(Mux[0]==S_Buffer4[0]){
+		if((Mux[1]==S_Buffer4[1])&&(Mux[2]==S_Buffer4[2])){
+			S_Buffer4[3]=data[0];
+			S_Buffer4[4]=data[1];
+			S_Buffer4[5]=data[2];
+			S_Buffer4[6]=data[3];
+		}
+	}
+	else if(Mux[0]==S_Buffer5[0]){
+		if((Mux[1]==S_Buffer5[1])&&(Mux[2]==S_Buffer5[2])){
+			S_Buffer5[3]=data[0];
+			S_Buffer5[4]=data[1];
+			S_Buffer5[5]=data[2];
+			S_Buffer5[6]=data[3];
+		}
+	}
+}
+
+//lecture Dictionnaire Object "upload"
+UNSIGNED32 DO_read(UNSIGNED8 Mux[2]){
+	if(Mux[0]==Buffer0[0]){
+		if((Mux[1]==Buffer0[1])&&(Mux[2]==Buffer0[2])){
+			buf=((Buffer0[6]<<24)|(Buffer0[5]<<16)|(Buffer0[4]<<8)|Buffer0[3]);
+			return buf;
+		}
+	}
+	else if(Mux[0]==Buffer1[0]){
+		if((Mux[1]==Buffer1[1])&&(Mux[2]==Buffer1[2])){
+			buf=((Buffer1[6]<<24)|(Buffer1[5]<<16)|(Buffer1[4]<<8)|Buffer1[3]);
+			return buf;
+		}
+	}
+	else if(Mux[0]==Buffer2[0]){
+		if((Mux[1]==Buffer2[1])&&(Mux[2]==Buffer2[2])){
+			buf=((Buffer2[6]<<24)|(Buffer2[5]<<16)|(Buffer2[4]<<8)|Buffer2[3]);
+			return buf;
+		}
+	}
+	else if(Mux[0]==Buffer3[0]){
+		if((Mux[1]==Buffer3[1])&&(Mux[2]==Buffer3[2])){
+			buf=((Buffer3[6]<<24)|(Buffer3[5]<<16)|(Buffer3[4]<<8)|Buffer3[3]);
+			return buf;
+		}
+	}
+	else if(Mux[0]==Buffer4[0]){
+		if((Mux[1]==Buffer4[1])&&(Mux[2]==Buffer4[2])){
+			buf=((Buffer4[6]<<24)|(Buffer4[5]<<16)|(Buffer4[4]<<8)|Buffer4[3]);
+			return buf;
+		}
+	}
+	else if(Mux[0]==Buffer5[0]){
+		if((Mux[1]==Buffer5[1])&&(Mux[2]==Buffer5[2])){
+			buf=((Buffer5[6]<<24)|(Buffer5[5]<<16)|(Buffer5[4]<<8)|Buffer5[3]);
+			return buf;
+		}
+	}
+return 0;
+}
+
+
+//la fontion mapping qui prépare le buffer de mappage
+UNSIGNED8 Mapping_appel(UNSIGNED8 Mux1[2],UNSIGNED8 Mux2[2]){
+	//chercher dans la partie du mux1 et le stocker dans le buffer, ensuite chercher le 2eme 
+	//mux et le stocker dans la partie 2 du buffer
+	
+	if(Mux1[0]==Buffer0[0]){
+		if((Mux1[1]==Buffer0[1])&&(Mux1[2]==Buffer0[2])){
+			mapping=((Buffer0[6]<<24)|(Buffer0[5]<<16)|(Buffer0[4]<<8)|Buffer0[3]);
+			return mapping;
+		}
+	}
+	else if(Mux1[0]==Buffer1[0]){
+		if((Mux1[1]==Buffer1[1])&&(Mux1[2]==Buffer1[2])){
+			mapping=((Buffer1[6]<<24)|(Buffer1[5]<<16)|(Buffer1[4]<<8)|Buffer1[3]);
+			return mapping;
+		}
+	}
+	else if(Mux1[0]==Buffer2[0]){
+		if((Mux1[1]==Buffer2[1])&&(Mux1[2]==Buffer2[2])){
+			mapping=((Buffer2[6]<<24)|(Buffer2[5]<<16)|(Buffer2[4]<<8)|Buffer2[3]);
+			return mapping;
+		}
+	}
+	else if(Mux1[0]==Buffer3[0]){
+		if((Mux1[1]==Buffer3[1])&&(Mux1[2]==Buffer3[2])){
+			mapping=((Buffer3[6]<<24)|(Buffer3[5]<<16)|(Buffer3[4]<<8)|Buffer3[3]);
+			return mapping;
+		}
+	}
+	else if(Mux1[0]==Buffer4[0]){
+		if((Mux1[1]==Buffer4[1])&&(Mux1[2]==Buffer4[2])){
+			mapping=((Buffer4[6]<<24)|(Buffer4[5]<<16)|(Buffer4[4]<<8)|Buffer4[3]);
+			return mapping;
+		}
+	}
+	else if(Mux1[0]==Buffer5[0]){
+		if((Mux1[1]==Buffer5[1])&&(Mux1[2]==Buffer5[2])){
+			mapping=((Buffer5[6]<<24)|(Buffer5[5]<<16)|(Buffer5[4]<<8)|Buffer5[3]);
+			return mapping;
+		}
+	}
+	//traitement pour le Mux 2
+	if(Mux2[0]==Buffer0[0]){
+		if((Mux2[1]==Buffer0[1])&&(Mux2[2]==Buffer0[2])){
+			mapping=((Buffer0[6]<<56)|(Buffer0[5]<<48)|(Buffer0[4]<<40)|(Buffer0[3]<<32));
+			return mapping;
+		}
+	}
+	else if(Mux2[0]==Buffer1[0]){
+		if((Mux2[1]==Buffer1[1])&&(Mux2[2]==Buffer1[2])){
+			mapping=((Buffer1[6]<<56)|(Buffer1[5]<<48)|(Buffer1[4]<<40)|(Buffer1[3]<<32));
+			return mapping;
+		}
+	}
+	else if(Mux2[0]==Buffer2[0]){
+		if((Mux2[1]==Buffer2[1])&&(Mux2[2]==Buffer2[2])){
+			mapping=((Buffer2[6]<<56)|(Buffer2[5]<<48)|(Buffer2[4]<<40)|(Buffer2[3]<<32));
+			return mapping;
+		}
+	}
+	else if(Mux2[0]==Buffer3[0]){
+		if((Mux2[1]==Buffer3[1])&&(Mux2[2]==Buffer3[2])){
+			mapping=((Buffer3[6]<<56)|(Buffer3[5]<<48)|(Buffer3[4]<<40)|(Buffer3[3]<<32));
+			return mapping;
+		}
+	}
+	else if(Mux2[0]==Buffer4[0]){
+		if((Mux2[1]==Buffer4[1])&&(Mux2[2]==Buffer4[2])){
+			mapping=((Buffer4[6]<<56)|(Buffer4[5]<<48)|(Buffer4[4]<<40)|(Buffer4[3]<<32));
+			return mapping;
+		}
+	}
+	else if(Mux2[0]==Buffer5[0]){
+		if((Mux2[1]==Buffer5[1])&&(Mux2[2]==Buffer5[2])){
+			mapping=((Buffer5[6]<<56)|(Buffer5[5]<<48)|(Buffer5[4]<<40)|(Buffer5[3]<<32));
+			return mapping;
+		}
+	}
+return 0;
+}
